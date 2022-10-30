@@ -1,11 +1,17 @@
 import "./App.css"
 import React from "react";
+import axios from "axios";
 
 import SearchForm from "./SearchForm";
 import ServiceProvidersList from "./ServicesList";
 
+
 function App() {
   const [filters, handleSearch] = React.useState({});
+
+  React.useEffect(() => {
+    axios.defaults.baseURL = "http://localhost:3000";
+  }, []);
 
   return (
     <div className="p-8 flex flex-col items-center w-full">

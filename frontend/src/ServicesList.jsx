@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import axios from "axios";
 
+import regions from "./regions";
 import ProviderOverlay from "./ProviderOverlay";
 
 const limit = 50;
@@ -12,9 +13,11 @@ const ProvidersList = ({ filters }) => {
   const [focusedProviderId, setFocusedProvider] = useState(null);
 
   const fetchNext = () => {
-    axios.get("providers/", { offset, limit }).then(response => {
+    axios.get("providers", { params: { offset, limit } }
+    ).then(response => {
       setProviders(prev => [...prev, ...response.data]);
       setOffset(prev => prev + limit);
+      console.log(response);
       // TODO
       setTotalProviders(1000);
     }).catch(() => {});
@@ -41,15 +44,18 @@ const ProvidersList = ({ filters }) => {
 
   return (
     <div className="mt-4">
-      {filteredServiceProviders.length ? filteredServiceProviders.map(provider => (
+      {filteredServiceProviders.length ? (
         <>
+        {filteredServiceProviders.map(provider => (
           <div
             onClick={() => setFocusedProvider(provider.id)}
             className="cursor-pointer my-2"
           >
             <div>{provider.name}</div>
-            <div>{provider.location}</div>
+            <div>{regions[provider.region]}</div>
+            <div>{provider.description}</div>
           </div>
+          ))}
           {offset < totalProviders && (
             <button
               onClick={fetchNext}
@@ -59,7 +65,7 @@ const ProvidersList = ({ filters }) => {
             </button>
           )}
         </>
-      )) : (
+      ) : (
         <div className="text-xl text-center">No Service Providers Found</div>
       )}
       <ProviderOverlay
