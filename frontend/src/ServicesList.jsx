@@ -1,44 +1,43 @@
 import { useMemo, useState, useEffect } from "react";
-import axios from "axios";
+import { useInfiniteQuery } from "react-query";
 
 import regions from "./regions";
 import ProviderOverlay from "./ProviderOverlay";
-
-const limit = 50;
+import { fetchProviders } from "./api";
 
 const ProvidersList = ({ filters }) => {
-  const [providers, setProviders] = useState([{ id: 1, name: "Testing" }]);
-  const [offset, setOffset] = useState(0);
-  const [totalProviders, setTotalProviders] = useState(1);
+  const { fetchNextPage, hasNextPage, data, isLoading } = useInfiniteQuery(["providers"], fetchProviders, {
+    getNextPageParam: lastPage => lastPage?.nextPage || 0,
+  });
   const [focusedProviderId, setFocusedProvider] = useState(null);
 
-  const fetchNext = () => {
-    axios.get("providers", { params: { offset, limit } }
-    ).then(response => {
-      setProviders(prev => [...prev, ...response.data]);
-      setOffset(prev => prev + limit);
-      console.log(response);
-      // TODO
-      setTotalProviders(1000);
-    }).catch(() => {});
-  };
-
-  useEffect(() => {
-    fetchNext();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+   const providers = useMemo(() => {
+     console.log(data);
+    if (!isLoading && data && data.pages) {
+      return data.pages.map(page => page?.data || []).flat();
+    }
+    return [];
+  }, [isLoading, data]);
 
   const filteredServiceProviders = useMemo(() => {
-    // TODO once I know API shape
+    if (!providers) {
+      return [];
+    }
     return providers.filter(provider => {
-      if (!filters) {
-        return true;
+      let include = true;
+      if (filters.region) {
+        include = include && provider.region === filters.region;
+      } else if (filters.service) {
+        include = include && provider.services.find(s => s === filters.service);
       }
-      return true;
-    });
+      return include;
+    }) || [];
   }, [providers, filters]);
 
   const focusedProvider = useMemo(() => {
+    if (!providers) {
+      return null;
+    }
     return providers.find(prov => prov.id === focusedProviderId);
   }, [providers, focusedProviderId]);
 
@@ -49,20 +48,22 @@ const ProvidersList = ({ filters }) => {
         {filteredServiceProviders.map(provider => (
           <div
             onClick={() => setFocusedProvider(provider.id)}
-            className="cursor-pointer my-2"
+            className="cursor-pointer py-2 border-b border-black"
           >
-            <div>{provider.name}</div>
-            <div>{regions[provider.region]}</div>
-            <div>{provider.description}</div>
+            <div className="font-bold">{provider.name}</div>
+            <div>Region: {regions[provider.region]}</div>
+            <div className="mt-2">{provider.description}</div>
           </div>
           ))}
-          {offset < totalProviders && (
+          {hasNextPage && (
+            <div className="flex justify-center">
             <button
-              onClick={fetchNext}
+              onClick={fetchNextPage}
               className="bg-blue-500 hover:bg-blue-700 rounded-md text-white py-1 px-2 mt-2"
             >
               View More Providers
             </button>
+            </div>
           )}
         </>
       ) : (

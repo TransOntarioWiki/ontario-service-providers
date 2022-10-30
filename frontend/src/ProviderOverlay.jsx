@@ -1,12 +1,10 @@
 import Modal from "react-overlays/Modal";
 
-const renderBackdrop = props => {
-  console.log(props);
-  return <div {...props} className="w-screen h-screen bg-black/30 fixed top-0 left-0" />
-}
+const renderBackdrop = props => (
+  <div {...props} className="w-screen h-screen bg-black/30 fixed top-0 left-0" />
+)
 
 const ProviderOverlay = ({ onClose, provider }) => {
-  console.log(Modal);
   return (
     <Modal
       show={provider}
