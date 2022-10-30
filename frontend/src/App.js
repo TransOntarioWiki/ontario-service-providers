@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="p-8 flex flex-col items-center w-full">
-      <h1 className="text-3xl mb-8">Ontario Trans Services Reviews!</h1>
+      <h1 className="text-3xl mb-8">TransOntario Wiki</h1>
       <SearchForm onSearch={handleSearch} />
       <ServiceProvidersList filters={filters} />
     </div>
