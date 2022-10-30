@@ -1,25 +1,53 @@
 DROP SCHEMA IF EXISTS api CASCADE;
 CREATE SCHEMA api;
+
+CREATE ROLE editor nologin;
+GRANT editor TO authenticator;
+GRANT USAGE ON SCHEMA api TO editor;
+
 CREATE ROLE web_anon nologin;
+GRANT USAGE ON SCHEMA api TO web_anon;
 
 CREATE VIEW api.languages AS SELECT language_name AS language FROM language;
 GRANT SELECT ON api.languages TO web_anon;
+GRANT SELECT ON api.languages TO editor;
 
 CREATE VIEW api.characteristics AS SELECT person_kind AS characteristic FROM characteristic;
 GRANT SELECT ON api.characteristics TO web_anon;
+GRANT SELECT ON api.characteristics TO editor;
 
 CREATE VIEW api.training AS SELECT training_kind FROM rho_training;
 GRANT SELECT ON api.training TO web_anon;
+GRANT SELECT ON api.training TO editor;
 
-CREATE VIEW api.fee AS SELECT fee_kind AS fee FROM fee;
-GRANT SELECT ON api.fee TO web_anon;
+CREATE VIEW api.fees AS SELECT fee_kind AS fee FROM fee;
+GRANT SELECT ON api.fees TO web_anon;
+GRANT SELECT ON api.fees TO editor;
 
-CREATE VIEW api.service AS SELECT service_kind AS service FROM service;
-GRANT SELECT ON api.service TO web_anon;
+CREATE VIEW api.services AS SELECT service_kind AS service FROM service;
+GRANT SELECT ON api.services TO web_anon;
+GRANT SELECT ON api.services TO editor;
 
-CREATE VIEW api.region AS SELECT DISTINCT region FROM fsa;
-GRANT SELECT ON api.region TO web_anon;
+CREATE VIEW api.regions AS SELECT DISTINCT region FROM fsa;
+GRANT SELECT ON api.regions TO web_anon;
+GRANT SELECT ON api.regions TO editor;
 
+CREATE VIEW api.reviews AS SELECT provider_id, text, score, username, discriminator, avatar FROM review LEFT JOIN discord_user ON review.discord_user_id = discord_user.id;
+GRANT SELECT ON api.reviews TO web_anon;
+GRANT SELECT ON api.reviews TO editor;
+
+ALTER TABLE review ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY review_policy ON review AS PERMISSIVE
+  USING (true)
+  WITH CHECK (current_setting('request.jwt.claims', true)::json->>'id' = discord_user_id);
+
+CREATE POLICY review_policy ON review AS RESTRICTIVE FOR UPDATE
+  USING (current_setting('request.jwt.claims', true)::json->>'id' = discord_user_id);
+
+CREATE POLICY review_policy ON review AS RESTRICTIVE FOR DELETE
+  USING (current_setting('request.jwt.claims', true)::json->>'id' = discord_user_id);
+  
 CREATE VIEW api.providers AS
   SELECT
     slug,
@@ -42,7 +70,8 @@ CREATE VIEW api.providers AS
     training,
     referral_requirements,
     fees,
-    services
+    services,
+    review_count
   FROM provider
   LEFT JOIN fsa ON provider.fsa = fsa.fsa
   LEFT JOIN (
@@ -87,7 +116,53 @@ CREATE VIEW api.providers AS
     LEFT JOIN service ON service.id = provider_service.service_id
     GROUP BY 1
   ) q6 ON provider.id = q6.id
+  LEFT JOIN (
+    SELECT provider.id, count(review) AS review_count
+    FROM provider
+    LEFT JOIN review ON review.provider_id = provider.id
+    GROUP BY 1
+  ) q7 on provider.id = q7.id
+  ORDER BY review_count DESC
 ;
 GRANT SELECT ON api.providers TO web_anon;
+GRANT SELECT ON api.providers TO editor;
 
-GRANT USAGE ON SCHEMA api TO web_anon;
+CREATE OR REPLACE FUNCTION post_review() RETURNS TRIGGER AS $$
+    BEGIN
+        IF (TG_OP = 'DELETE') THEN
+            DELETE FROM review WHERE provider_id = OLD.provider_id and discord_user_id = (SELECT id FROM discord_user WHERE discord_user.username = OLD.username AND discord_user.discriminator = OLD.discriminator);
+            IF NOT FOUND THEN RETURN NULL; END IF;
+            RETURN OLD;
+        ELSIF (TG_OP = 'UPDATE') THEN
+            UPDATE review SET text = NEW.text, score = NEW.score WHERE provider_id = OLD.provider_id AND discord_user_id = (SELECT id FROM discord_user WHERE discord_user.username = OLD.username AND discord_user.discriminator = OLD.discriminator);
+            IF NOT FOUND THEN RETURN NULL; END IF;
+            RETURN NEW;
+        ELSIF (TG_OP = 'INSERT') THEN
+            INSERT INTO review VALUES(
+	      NEW.provider_id, 
+	      (current_setting('request.jwt.claims', true)::json->>'id'),
+	      NEW.text,
+	      NEW.score);
+            RETURN NEW;
+        END IF;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER do_post_review
+INSTEAD OF INSERT OR UPDATE OR DELETE ON api.reviews
+    FOR EACH ROW EXECUTE FUNCTION post_review();
+
+GRANT INSERT ON api.reviews TO editor;
+GRANT UPDATE ON api.reviews TO editor;
+GRANT DELETE ON api.reviews TO editor;
+GRANT SELECT ON review TO editor;
+GRANT INSERT ON review TO editor;
+GRANT UPDATE ON review TO editor;
+GRANT DELETE ON review TO editor;
+
+GRANT SELECT ON discord_user TO editor;
+
+CREATE VIEW api.me AS SELECT username, discriminator, avatar FROM discord_user WHERE discord_user.id = current_setting('request.jwt.claims', true)::json->>'id';
+
+;
+GRANT SELECT ON api.me TO editor;

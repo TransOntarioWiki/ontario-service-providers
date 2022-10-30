@@ -6,5 +6,6 @@ createdb -p 5490 -U transontario transontario
 psql -p 5490 -U transontario < ./01_schema.sql
 psql -p 5490 -U transontario < ./02_rho.sql
 psql -p 5490 -U transontario < ./03_api.sql
+psql -p 5490 -U transontario < ./04_auth.sql
 pg_ctl stop -D ./db
 

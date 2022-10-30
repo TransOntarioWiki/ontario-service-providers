@@ -1,4 +1,4 @@
-DROP TABLE reviewer CASCADE;
+DROP TABLE discord_user CASCADE;
 DROP TABLE characteristic CASCADE;
 DROP TABLE rho_training CASCADE;
 DROP TABLE referral_requirement CASCADE;
@@ -15,10 +15,11 @@ DROP TABLE provider_service CASCADE;
 DROP TABLE review CASCADE;
 DROP TABLE fsa CASCADE;
 
-CREATE TABLE IF NOT EXISTS reviewer(
-	id SERIAL PRIMARY KEY,
-	sso_source TEXT NOT NULL,
-	sso_data TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS discord_user(
+	id TEXT PRIMARY KEY NOT NULL,
+	username TEXT NOT NULL,
+	discriminator TEXT NOT NULL,
+	avatar TEXT
 );
 
 CREATE TABLE IF NOT EXISTS characteristic(
@@ -120,12 +121,12 @@ CREATE TABLE IF NOT EXISTS provider_service(
 
 CREATE TABLE IF NOT EXISTS review(
 	provider_id INTEGER NOT NULL,
-	reviewer_id INTEGER NOT NULL,
+	discord_user_id TEXT,
 	text TEXT NOT NULL,
 	score INTEGER NOT NULL,
 	FOREIGN KEY(provider_id) REFERENCES provider(id),
-	FOREIGN KEY(reviewer_id) REFERENCES reviewer(id),
-	PRIMARY KEY(provider_id, reviewer_id)
+	FOREIGN KEY(discord_user_id) REFERENCES discord_user(id),
+	PRIMARY KEY(provider_id, discord_user_id)
 );
 
 CREATE TABLE IF NOT EXISTS fsa(
