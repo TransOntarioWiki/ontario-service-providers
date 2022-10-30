@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useInfiniteQuery } from "react-query";
 
 import regions from "./regions";
@@ -6,13 +6,14 @@ import ProviderOverlay from "./ProviderOverlay";
 import { fetchProviders } from "./api";
 
 const ProvidersList = ({ filters }) => {
-  const { fetchNextPage, hasNextPage, data, isLoading } = useInfiniteQuery(["providers"], fetchProviders, {
-    getNextPageParam: lastPage => lastPage?.nextPage || 0,
+  const { fetchNextPage, hasNextPage, data, isLoading } = useInfiniteQuery(["providers", filters], fetchProviders, {
+    getNextPageParam: lastPage => {
+      return lastPage?.nextPage;
+    },
   });
   const [focusedProviderId, setFocusedProvider] = useState(null);
 
    const providers = useMemo(() => {
-     console.log(data);
     if (!isLoading && data && data.pages) {
       return data.pages.map(page => page?.data || []).flat();
     }
@@ -38,7 +39,7 @@ const ProvidersList = ({ filters }) => {
     if (!providers) {
       return null;
     }
-    return providers.find(prov => prov.id === focusedProviderId);
+    return providers.find(prov => prov.slug === focusedProviderId);
   }, [providers, focusedProviderId]);
 
   return (
@@ -47,7 +48,7 @@ const ProvidersList = ({ filters }) => {
         <>
         {filteredServiceProviders.map(provider => (
           <div
-            onClick={() => setFocusedProvider(provider.id)}
+            onClick={() => setFocusedProvider(provider.slug)}
             className="cursor-pointer py-2 border-b border-black"
           >
             <div className="font-bold">{provider.name}</div>

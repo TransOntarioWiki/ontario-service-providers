@@ -5,14 +5,24 @@ const fetchServices = () => fetch(`${baseUrl}service`).then(res => res.json()).t
     return response.map(x => ({ id: x.service, name: x.service }));
   });
 
-const fetchProviders = async ({ pageParam = 0, params, headers }) => {
+const fetchProviders = async ({ pageParam = 0, queryKey: [,params] }) => {
   const response = await fetch(`${baseUrl}providers?` + new URLSearchParams({
-    ...params,
+    ...Object.fromEntries(Object.entries(params).map(([key, value]) => [key, `eq.${value}`])),
     offset: pageParam,
     limit: 50,
-  }));
-  const data = await response.json()
-  return { data, nextPage: response.status === 206 ? pageParam + 50 : null };
+  }), {
+    headers: {
+      Prefer: "count=exact",
+    }
+  });
+  const data = await response.json();
+
+  console.log(response);
+  const totalResults = Number(
+    response.headers.get("content-range").split("/")[1]);
+  const nextStart = pageParam + 50;
+
+  return { data, nextPage: totalResults > nextStart ? nextStart : null };
 };
 
 export { fetchServices, fetchProviders };
