@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e -o pipefail
 initdb -U transontario --locale=C -E UTF-8 ./db
 pg_ctl -o "-p 5490" start -D ./db
