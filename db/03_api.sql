@@ -42,10 +42,10 @@ CREATE POLICY review_policy ON review AS PERMISSIVE
   USING (true)
   WITH CHECK (current_setting('request.jwt.claims', true)::json->>'id' = discord_user_id);
 
-CREATE POLICY review_policy ON review AS RESTRICTIVE FOR UPDATE
+CREATE POLICY review_policy_update ON review AS RESTRICTIVE FOR UPDATE
   USING (current_setting('request.jwt.claims', true)::json->>'id' = discord_user_id);
 
-CREATE POLICY review_policy ON review AS RESTRICTIVE FOR DELETE
+CREATE POLICY review_policy_delete ON review AS RESTRICTIVE FOR DELETE
   USING (current_setting('request.jwt.claims', true)::json->>'id' = discord_user_id);
   
 CREATE VIEW api.providers AS
