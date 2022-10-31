@@ -1,4 +1,7 @@
-const baseUrl = "http://localhost:3000/";
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://api.transontario.wiki/"
+    : "http://localhost:3000/";
 
 // Use in POST requests later
 // eslint-disable-next-line no-unused-vars
