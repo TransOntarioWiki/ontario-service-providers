@@ -35,7 +35,12 @@ const SearchForm = ({ onSearch }) => {
           <Listener values={values} />
           <div className="flex flex-wrap justify-center gap-2 mb-4">
             {Object.entries(regions).map(([api, ux]) => (
-              <PillButtonInput name="region" value={`eq.${api}`} label={ux} />
+              <PillButtonInput
+                key={api}
+                name="region"
+                value={api === "null" ? "is.null" : `eq.${api}`}
+                label={ux}
+              />
             ))}
           </div>
           <div className="flex flex-col items-center">

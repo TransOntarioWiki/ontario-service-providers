@@ -32,7 +32,10 @@ const ProvidersList = ({ filters }) => {
       providers.filter((provider) => {
         let include = true;
         if (filters.region) {
-          include = include && provider.region === filters.region.split(".")[1];
+          include =
+            include &&
+            (provider.region === filters.region.split(".")[1] ||
+              (provider.region == null && filters.region === "is.null"));
         } else if (filters.services) {
           include =
             include &&
@@ -58,6 +61,7 @@ const ProvidersList = ({ filters }) => {
         <>
           {filteredServiceProviders.map((provider) => (
             <div
+              key={provider.slug}
               onClick={() => setFocusedProvider(provider.slug)}
               className="cursor-pointer py-2 border-b border-black"
             >

@@ -1,7 +1,8 @@
 const regions = {
+  toronto: "GTA - Toronto",
   durham: "GTA - Durham Region",
   york: "GTA - York Region",
-  toronto: "GTA - Peel Region",
+  peel: "GTA - Peel Region",
   ottawa: "Ottawa and Eastern Ontario",
   hamilton: "Hamilton-Burlington-Oakville",
   kw: "Kitchener-Cambridge-Waterloo",
@@ -13,6 +14,7 @@ const regions = {
   "thunder-bay": "Thunder Bay and Northwest Ontario",
   kingston: "Belleville-Kingston-Quinte West",
   sarnia: "Sarnia",
+  null: "Uncategorized",
 };
 
 export default regions;

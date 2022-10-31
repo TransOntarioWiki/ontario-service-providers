@@ -16,7 +16,7 @@ const ProviderOverlay = ({ onClose, provider }) => {
   }
   return (
     <Modal
-      show={provider}
+      show={provider != null}
       onHide={onClose}
       renderBackdrop={renderBackdrop}
       className="fixed top-1/2 left-1/2 p-4 rounded-lg bg-white drop-shadow-md -translate-x-1/2 -translate-y-1/2 min-width-"
@@ -68,8 +68,8 @@ const ProviderOverlay = ({ onClose, provider }) => {
             {provider.house_of_operation && (
               <span>Hours: {provider.hours_of_operation}</span>
             )}
-            {provider.address.split("\n").map((addressSegment) => (
-              <p>{addressSegment}</p>
+            {provider.address?.split("\n").map((addressSegment, i) => (
+              <p key={i}>{addressSegment}</p>
             ))}
           </div>
         </div>
