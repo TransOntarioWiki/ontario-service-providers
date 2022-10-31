@@ -27,9 +27,9 @@ const ProvidersList = ({ filters }) => {
     return providers.filter(provider => {
       let include = true;
       if (filters.region) {
-        include = include && provider.region === filters.region;
-      } else if (filters.service) {
-        include = include && provider.services.find(s => s === filters.service);
+        include = include && provider.region === filters.region.split(".")[1];
+      } else if (filters.services) {
+        include = include && provider.services.find(s => s === filters.services.match(/cs.{([A-Za-z -]+)}/)[1]);
       }
       return include;
     }) || [];

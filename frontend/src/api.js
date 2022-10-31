@@ -11,7 +11,7 @@ const fetchServices = () => fetch(`${baseUrl}services`).then(res => res.json()).
 
 const fetchProviders = async ({ pageParam = 0, queryKey: [,params] }) => {
   const response = await fetch(`${baseUrl}providers?` + new URLSearchParams({
-    ...Object.fromEntries(Object.entries(params).map(([key, value]) => [key, `eq.${value}`])),
+    ...params,
     offset: pageParam,
     limit: 50,
   }), {

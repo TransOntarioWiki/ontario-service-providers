@@ -11,7 +11,7 @@ const regions = {
   "windsor": "Windsor",
   "barrie": "Barrie and Central Ontario",
   "sudbury": "Sudbury-North Bay-Sault Ste Marie and Northeast Ontario",
-  "thunder bay": "Thunder Bay and Northwest Ontario",
+  "thunder-bay": "Thunder Bay and Northwest Ontario",
   "kingston": "Belleville-Kingston-Quinte West",
   "sarnia": "Sarnia",
 };
