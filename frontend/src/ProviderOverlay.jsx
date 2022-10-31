@@ -1,10 +1,14 @@
 import Modal from "react-overlays/Modal";
 
-const renderBackdrop = props => (
-  <div {...props} className="w-screen h-screen bg-black/30 fixed top-0 left-0" />
+const renderBackdrop = (props) => (
+  <div
+    {...props}
+    className="w-screen h-screen bg-black/30 fixed top-0 left-0"
+  />
 );
 
-const rhoUrl = slug => `https://www.rainbowhealthontario.ca/service-provider-directory/${slug}/`;
+const rhoUrl = (slug) =>
+  `https://www.rainbowhealthontario.ca/service-provider-directory/${slug}/`;
 
 const ProviderOverlay = ({ onClose, provider }) => {
   if (!provider) {
@@ -46,7 +50,9 @@ const ProviderOverlay = ({ onClose, provider }) => {
                   href={`mailto:${provider.email}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                >{provider.email}</a>
+                >
+                  {provider.email}
+                </a>
               </span>
             )}
             {provider.website && (
@@ -55,13 +61,16 @@ const ProviderOverlay = ({ onClose, provider }) => {
                 href={provider.website}
                 target="_blank"
                 rel="noopener noreferrer"
-              >{provider.website}</a>
+              >
+                {provider.website}
+              </a>
             )}
             {provider.house_of_operation && (
               <span>Hours: {provider.hours_of_operation}</span>
             )}
-            {provider.address.split("\n").map(
-              addressSegment => <p>{addressSegment}</p>)}
+            {provider.address.split("\n").map((addressSegment) => (
+              <p>{addressSegment}</p>
+            ))}
           </div>
         </div>
       </div>

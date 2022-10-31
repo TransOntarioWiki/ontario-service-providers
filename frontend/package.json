@@ -19,8 +19,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test:watch": "react-scripts test",
+    "test": "react-scripts test --watchAll=false && npm run prettier:check",
+    "eject": "react-scripts eject",
+    "prettier:fix": "prettier --write ./src/",
+    "prettier:check": "prettier --check ./src/"
   },
   "eslintConfig": {
     "extends": [
@@ -43,6 +46,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.18",
+    "prettier": "2.7.1",
     "tailwindcss": "^3.2.1"
   }
 }

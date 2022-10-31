@@ -1,4 +1,4 @@
-import "./App.css"
+import "./App.css";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -24,14 +24,19 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-    <div className="p-8 flex flex-col items-center w-full h-full">
-      <h1 className="text-3xl mb-8">TransOntario Wiki</h1>
-      <SearchForm onSearch={handleSearch} />
-      <ServiceProvidersList filters={filters} />
-      {(!prepped || !isLoggedIn()) && (
-        <button onClick={initiateLogin} className="absolute top-2 right-2 bg-pink-500 hover:bg-pink-500 text-white py-1 px-2 rounded">Login to add Review</button>
-      )}
-    </div>
+      <div className="p-8 flex flex-col items-center w-full h-full">
+        <h1 className="text-3xl mb-8">TransOntario Wiki</h1>
+        <SearchForm onSearch={handleSearch} />
+        <ServiceProvidersList filters={filters} />
+        {(!prepped || !isLoggedIn()) && (
+          <button
+            onClick={initiateLogin}
+            className="absolute top-2 right-2 bg-pink-500 hover:bg-pink-500 text-white py-1 px-2 rounded"
+          >
+            Login to add Review
+          </button>
+        )}
+      </div>
     </QueryClientProvider>
   );
 }
