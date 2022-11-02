@@ -1,14 +1,33 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+import Services from "./Services";
 import reportWebVitals from "./reportWebVitals";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
+import OAuth from "./OAuth";
+import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Services />,
+  },
+  {
+    path: "/oauth",
+    element: <OAuth />,
+  },
+]);
+
+const queryClient = new QueryClient();
+
 root.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

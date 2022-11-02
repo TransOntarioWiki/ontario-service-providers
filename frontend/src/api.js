@@ -51,32 +51,58 @@ const initiateLogin = async () => {
   )}&state=${state}&response_type=code`;
 };
 
+let loginPromise;
+
 const handleLogin = async () => {
-  const searchParams = new URLSearchParams(window.location.search);
-  const state = searchParams.get("state");
-  if (state === localStorage.getItem("dc_state")) {
-    const code = searchParams.get("code");
-    bearer = await fetch(`${baseUrl}auth`, {
-      method: "POST",
-      body: JSON.stringify({ code }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Prefer: "return=representation",
-      },
-    });
-    console.log("Successfully logged in!");
-    localStorage.setItem("auth", bearer);
+  if (loginPromise) {
+    // Can be called multiple times.
+    return await loginPromise;
   }
+
+  loginPromise = (async () => {
+    localStorage.removeItem("auth");
+
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const state = searchParams.get("state");
+      if (state === localStorage.getItem("dc_state")) {
+        const code = searchParams.get("code");
+        const response = await fetch(`${baseUrl}auth`, {
+          method: "POST",
+          body: JSON.stringify({ code }),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+        });
+        if (response.status >= 400) {
+          console.warn(await response.text());
+          return false;
+        }
+        const json = await response.json();
+        if (!json?.[0]?.code) {
+          console.warn("missing code");
+          return false;
+        }
+        bearer = json?.[0]?.code;
+        localStorage.setItem("auth", bearer);
+        return true;
+      }
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  })();
+
+  return await loginPromise;
 };
 
-const init = () => {
-  bearer = localStorage.getItem("auth");
-};
+bearer = localStorage.getItem("auth");
+
 const isLoggedIn = () => Boolean(bearer);
 
 export {
-  init,
   isLoggedIn,
   handleLogin,
   initiateLogin,
