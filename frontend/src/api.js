@@ -1,20 +1,128 @@
+import { QueryClient, useQuery, useInfiniteQuery } from "react-query";
+
 const baseUrl =
   process.env.NODE_ENV === "production"
     ? "https://api.transontario.wiki/"
     : "http://localhost:3000/";
 
-// Use in POST requests later
-// eslint-disable-next-line no-unused-vars
 let bearer;
+export const queryClient = new QueryClient();
 
-const fetchServices = () =>
+export const fetchServices = () =>
   fetch(`${baseUrl}services`)
     .then((res) => res.json())
     .then((response) => {
       return response.map((x) => ({ id: x.service, name: x.service }));
     });
 
-const fetchProviders = async ({ pageParam = 0, queryKey: [, params] }) => {
+const fetchMe = async () => {
+  if (!bearer) {
+    return null;
+  }
+
+  const res = await fetch(`${baseUrl}me`, {
+    headers: { Authorization: `Bearer ${bearer}` },
+  });
+  if (res.status !== 200) {
+    bearer = null;
+    return null;
+  }
+  const json = await res.json();
+  return json?.[0];
+};
+
+export const useMe = () => {
+  return useQuery(["me"], fetchMe);
+};
+
+export const postReview = async (provider_id, text, score) => {
+  if (!bearer) {
+    return null;
+  }
+
+  await fetch(`${baseUrl}reviews`, {
+    method: "POST",
+    body: JSON.stringify({ provider_id, text, score }),
+    headers: {
+      Authorization: `Bearer ${bearer}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+  });
+
+  queryClient.invalidateQueries(["reviews", provider_id]);
+};
+
+export const putReview = async (provider_id, discord_user_id, text, score) => {
+  if (!bearer) {
+    return null;
+  }
+
+  await fetch(
+    `${baseUrl}reviews?` +
+      new URLSearchParams({
+        provider_id: `eq.${provider_id}`,
+        discord_user_id: `eq.${discord_user_id}`,
+      }),
+    {
+      method: "PATCH",
+      body: JSON.stringify({ provider_id, text, score }),
+      headers: {
+        Authorization: `Bearer ${bearer}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+      },
+    }
+  );
+
+  queryClient.invalidateQueries(["reviews", provider_id]);
+};
+
+export const fetchReviews = async ({
+  queryKey: [, providerId],
+  pageParam = 0,
+}) => {
+  if (!providerId) {
+    return null;
+  }
+
+  const response = await fetch(
+    `${baseUrl}reviews?` +
+      new URLSearchParams({
+        provider_id: `eq.${providerId}`,
+        offset: pageParam,
+        limit: 50,
+      }),
+    {
+      headers: {
+        Prefer: "count=exact",
+      },
+    }
+  );
+  const data = await response.json();
+
+  const totalResults = Number(
+    response.headers.get("content-range").split("/")[1]
+  );
+  const nextStart = pageParam + 50;
+
+  return { data, nextPage: totalResults > nextStart ? nextStart : null };
+};
+
+export function useReviews(providerId) {
+  return useInfiniteQuery(["reviews", providerId], fetchReviews, {
+    getNextPageParam: (lastPage) => {
+      return lastPage?.nextPage;
+    },
+  });
+}
+
+export const fetchProviders = async ({
+  pageParam = 0,
+  queryKey: [, params],
+}) => {
   const response = await fetch(
     `${baseUrl}providers?` +
       new URLSearchParams({
@@ -38,7 +146,7 @@ const fetchProviders = async ({ pageParam = 0, queryKey: [, params] }) => {
   return { data, nextPage: totalResults > nextStart ? nextStart : null };
 };
 
-const initiateLogin = async () => {
+export const initiateLogin = async () => {
   const response = await fetch(`${baseUrl}discord_application`);
   const [{ client_id, redirect_uri }] = await response.json();
 
@@ -51,9 +159,15 @@ const initiateLogin = async () => {
   )}&state=${state}&response_type=code`;
 };
 
+export const initiateLogout = async () => {
+  bearer = null;
+  localStorage.bearer = null;
+  queryClient.invalidateQueries();
+};
+
 let loginPromise;
 
-const handleLogin = async () => {
+export const handleLogin = async () => {
   if (loginPromise) {
     // Can be called multiple times.
     return await loginPromise;
@@ -81,12 +195,13 @@ const handleLogin = async () => {
           return false;
         }
         const json = await response.json();
-        if (!json?.[0]?.code) {
-          console.warn("missing code");
+        if (!json?.[0]?.bearer) {
+          console.warn("missing cbearerode");
           return false;
         }
-        bearer = json?.[0]?.code;
+        bearer = json?.[0]?.bearer;
         localStorage.setItem("auth", bearer);
+        queryClient.invalidateQueries();
         return true;
       }
     } catch (err) {
@@ -100,12 +215,4 @@ const handleLogin = async () => {
 
 bearer = localStorage.getItem("auth");
 
-const isLoggedIn = () => Boolean(bearer);
-
-export {
-  isLoggedIn,
-  handleLogin,
-  initiateLogin,
-  fetchServices,
-  fetchProviders,
-};
+export const isLoggedIn = () => Boolean(bearer);

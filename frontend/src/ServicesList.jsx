@@ -55,6 +55,10 @@ const ProvidersList = ({ filters }) => {
     return providers.find((prov) => prov.slug === focusedProviderId);
   }, [providers, focusedProviderId]);
 
+  if (isLoading) {
+    return <div />;
+  }
+
   return (
     <div className="mt-4">
       {filteredServiceProviders.length ? (

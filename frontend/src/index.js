@@ -4,7 +4,8 @@ import "./index.css";
 import Services from "./Services";
 import reportWebVitals from "./reportWebVitals";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
+import { queryClient } from "./api";
 import OAuth from "./OAuth";
 import "./index.css";
 
@@ -20,8 +21,6 @@ const router = createBrowserRouter([
     element: <OAuth />,
   },
 ]);
-
-const queryClient = new QueryClient();
 
 root.render(
   <React.StrictMode>
