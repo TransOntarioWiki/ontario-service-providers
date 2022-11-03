@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import Services from "./Services";
+import Privacy from "./Privacy";
+import Tos from "./Tos";
 import reportWebVitals from "./reportWebVitals";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { QueryClientProvider } from "react-query";
@@ -19,6 +21,14 @@ const router = createBrowserRouter([
   {
     path: "/oauth",
     element: <OAuth />,
+  },
+  {
+    path: "/privacy",
+    element: <Privacy />,
+  },
+  {
+    path: "/tos",
+    element: <Tos />,
   },
 ]);
 

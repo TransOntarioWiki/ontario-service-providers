@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -14,16 +15,16 @@ export default function Footer() {
           GitHub
         </a>{" "}
         |{" "}
-        <a href="/tos" className="underline text-blue-900 hover:text-blue-300">
+        <Link to="/tos" className="underline text-blue-900 hover:text-blue-300">
           Terms of Service
-        </a>{" "}
+        </Link>{" "}
         |{" "}
-        <a
-          href="/privacy"
+        <Link
+          to="/privacy"
           className="underline text-blue-900 hover:text-blue-300"
         >
           Privacy Policy
-        </a>
+        </Link>
       </p>
     </div>
   );
