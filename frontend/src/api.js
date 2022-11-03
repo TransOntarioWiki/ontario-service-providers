@@ -24,7 +24,7 @@ const fetchMe = async () => {
     headers: { Authorization: `Bearer ${bearer}` },
   });
   if (res.status !== 200) {
-    bearer = null;
+    initiateLogout();
     return null;
   }
   const json = await res.json();
