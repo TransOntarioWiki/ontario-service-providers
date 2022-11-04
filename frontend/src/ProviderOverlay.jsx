@@ -8,7 +8,7 @@ import ProviderContactDetails from "./ProviderContactDetails";
 const renderBackdrop = (props) => (
   <div
     {...props}
-    className="w-screen h-screen bg-black/30 fixed top-0 left-0"
+    className="w-screen h-screen bg-black/50 fixed top-0 left-0"
   />
 );
 
@@ -38,9 +38,10 @@ const ProviderOverlay = ({ onClose, provider }) => {
       show={provider != null}
       onHide={onClose}
       renderBackdrop={renderBackdrop}
-      className="fixed top-1/2 left-1/2 p-4 rounded-lg bg-white drop-shadow-md -translate-x-1/2 -translate-y-1/2 min-width-0 max-h-full overflow-y-auto box-border"
+      className="fixed top-1/2 left-1/2 p-4 w-full lg:w-fit lg:rounded-lg bg-white drop-shadow-md -translate-x-1/2 -translate-y-1/2 min-width-0 max-h-full overflow-y-auto box-border"
     >
       <div className="flex flex-col">
+        <button onClick={onClose} className="absolute block top-2 right-4">x</button>
         <h1 className="text-3xl">{provider.name}</h1>
         {provider.slug && (
           <a
@@ -56,13 +57,13 @@ const ProviderOverlay = ({ onClose, provider }) => {
         <span>Specializes in: {provider.specializes_in?.join(", ")}</span>
         <div className="flex mt-6 gap-2 flex-col lg:flex-row">
           <div className="w-full lg:w-2/3">
-            <p className="w-96">{provider.description}</p>
+            <p className="w-full lg:w-96">{provider.description}</p>
           </div>
           <ProviderContactDetails provider={provider} />
         </div>
-        <h2 className="pt-4 text-2xl">Reviews</h2>
+        <h2 className="pt-4 pb-2 text-2xl">Reviews</h2>
         {me.data ? <ReviewForm key={provider.id} myReview={myExistingReviewData} provider={provider} /> : null}
-        {reviews.map((review) => review.discord_user_id === me.data?.id ? null : <Review review={review} />)}
+        {reviews.map((review) => review.discord_user_id === me.data?.id || !review.text ? null : <Review key={review.id} review={review} />)}
         {reviews.length === 0 ? <div>No reviews</div> : null}
       </div>
     </Modal>
