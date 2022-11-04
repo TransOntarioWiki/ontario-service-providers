@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import Services from "./Services";
 import Privacy from "./Privacy";
+import EditProvider from "./EditProvider";
 import Tos from "./Tos";
 import reportWebVitals from "./reportWebVitals";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Services />,
+  },
+  {
+    path: "/provider/:providerSlug/edit",
+    element: <EditProvider />,
   },
   {
     path: "/oauth",

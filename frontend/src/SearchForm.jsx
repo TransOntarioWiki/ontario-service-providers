@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import { useForm, Form, Field } from "react-final-form";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
-import { useQuery } from "react-query";
 
 import regions from "./regions";
-import { fetchServices } from "./api";
+import { useServices } from "./api";
 import PillButtonInput from "./PillButtonInput";
 
 const autoCompleteWrapper = ({ input, items }) => (
@@ -26,7 +25,8 @@ const Listener = ({ values }) => {
 };
 
 const SearchForm = ({ onSearch }) => {
-  const { data: services } = useQuery(["services"], fetchServices);
+  const servicesData = useServices();
+  const services = servicesData.data;
 
   return (
     <Form onSubmit={onSearch}>

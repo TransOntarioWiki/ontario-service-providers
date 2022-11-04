@@ -4,6 +4,7 @@ import { useMe, useReviews } from "./api";
 import Review from "./Review";
 import ReviewForm from "./ReviewForm";
 import ProviderContactDetails from "./ProviderContactDetails";
+import { Link } from "react-router-dom";
 
 const renderBackdrop = (props) => (
   <div
@@ -41,7 +42,9 @@ const ProviderOverlay = ({ onClose, provider }) => {
       className="fixed top-1/2 left-1/2 p-4 w-full lg:w-fit lg:rounded-lg bg-white drop-shadow-md -translate-x-1/2 -translate-y-1/2 min-width-0 max-h-full overflow-y-auto box-border"
     >
       <div className="flex flex-col">
-        <button onClick={onClose} className="absolute block top-2 right-4">x</button>
+        <button onClick={onClose} className="absolute block top-2 right-4">
+          x
+        </button>
         <h1 className="text-3xl">{provider.name}</h1>
         {provider.slug && (
           <a
@@ -53,6 +56,14 @@ const ProviderOverlay = ({ onClose, provider }) => {
             View on RHO
           </a>
         )}
+        {me.data ? (
+          <Link
+            to={`/provider/${provider.slug}/edit`}
+            className="text-blue-500 self-end"
+          >
+            Edit
+          </Link>
+        ) : null}
         <span>Services: {provider.services?.join(", ")}</span>
         <span>Specializes in: {provider.specializes_in?.join(", ")}</span>
         <div className="flex mt-6 gap-2 flex-col lg:flex-row">
@@ -62,8 +73,18 @@ const ProviderOverlay = ({ onClose, provider }) => {
           <ProviderContactDetails provider={provider} />
         </div>
         <h2 className="pt-4 pb-2 text-2xl">Reviews</h2>
-        {me.data ? <ReviewForm key={provider.id} myReview={myExistingReviewData} provider={provider} /> : null}
-        {reviews.map((review) => review.discord_user_id === me.data?.id || !review.text ? null : <Review key={review.id} review={review} />)}
+        {me.data ? (
+          <ReviewForm
+            key={provider.id}
+            myReview={myExistingReviewData}
+            provider={provider}
+          />
+        ) : null}
+        {reviews.map((review) =>
+          review.discord_user_id === me.data?.id || !review.text ? null : (
+            <Review key={review.id} review={review} />
+          )
+        )}
         {reviews.length === 0 ? <div>No reviews</div> : null}
       </div>
     </Modal>

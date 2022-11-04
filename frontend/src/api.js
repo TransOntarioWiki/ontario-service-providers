@@ -1,6 +1,9 @@
 import { QueryClient, useQuery, useInfiniteQuery } from "react-query";
 
-const baseUrl = "https://api.transontario.wiki/";
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://api.transontario.wiki/"
+    : "http://localhost:3000/";
 
 let bearer;
 export const queryClient = new QueryClient();
@@ -11,6 +14,10 @@ export const fetchServices = () =>
     .then((response) => {
       return response.map((x) => ({ id: x.service, name: x.service }));
     });
+
+export const useServices = () => {
+  return useQuery(["services"], fetchServices);
+};
 
 const fetchMe = async () => {
   if (!bearer) {
@@ -141,6 +148,58 @@ export const fetchProviders = async ({
   const nextStart = pageParam + 50;
 
   return { data, nextPage: totalResults > nextStart ? nextStart : null };
+};
+
+export const fetchProvider = async ({ queryKey: [, providerSlug] }) => {
+  const response = await fetch(
+    `${baseUrl}providers?` +
+      new URLSearchParams({
+        slug: `eq.${providerSlug}`,
+      })
+  );
+  const data = await response.json();
+
+  return data?.[0];
+};
+
+export const useProvider = (providerSlug) => {
+  return useQuery(["provider", providerSlug], fetchProvider);
+};
+
+export const fetchReferralRequirements = async () => {
+  const response = await fetch(`${baseUrl}referral_requirements`);
+  return await response.json();
+};
+
+export const useReferralRequirements = () => {
+  return useQuery(["referral_requirements"], fetchReferralRequirements);
+};
+
+export const fetchLanguages = async () => {
+  const response = await fetch(`${baseUrl}languages`);
+  return await response.json();
+};
+
+export const useLanguages = () => {
+  return useQuery(["languages"], fetchLanguages);
+};
+
+export const fetchFees = async () => {
+  const response = await fetch(`${baseUrl}fees`);
+  return await response.json();
+};
+
+export const useFees = () => {
+  return useQuery(["fees"], fetchFees);
+};
+
+export const fetchCharacteristics = async () => {
+  const response = await fetch(`${baseUrl}characteristics`);
+  return await response.json();
+};
+
+export const useCharacteristics = () => {
+  return useQuery(["characteristics"], fetchCharacteristics);
 };
 
 export const initiateLogin = async () => {
