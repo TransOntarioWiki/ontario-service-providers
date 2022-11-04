@@ -1,9 +1,6 @@
 import { QueryClient, useQuery, useInfiniteQuery } from "react-query";
 
-const baseUrl =
-  process.env.NODE_ENV === "production"
-    ? "https://api.transontario.wiki/"
-    : "http://localhost:3000/";
+const baseUrl = "https://api.transontario.wiki/";
 
 let bearer;
 export const queryClient = new QueryClient();
