@@ -110,14 +110,14 @@ function EditProvider(props) {
                 <Field
                   name="name"
                   component="input"
-                  className="m-2 border-black border "
+                  className="m-2 border-black border-b "
                 />
 
-                <label className="self-center text-right">Address</label>
+                <label className="pt-3 text-right">Address</label>
                 <Field
                   name="address"
                   component="textarea"
-                  className="m-2 border-black border resize-none h-32"
+                  className="m-2 border-black border-b px-2 py-1 resize-none h-32"
                 />
 
                 <label className="self-center text-right">FSA</label>
@@ -125,7 +125,7 @@ function EditProvider(props) {
                   <Field
                     name="fsa"
                     component="input"
-                    className="m-2 border-black border"
+                    className="m-2 border-black border-b"
                   />
                   (First three digits of postal code)
                 </div>
@@ -134,65 +134,65 @@ function EditProvider(props) {
                 <Field
                   name="email"
                   component="input"
-                  className="m-2 border-black border "
+                  className="m-2 border-black border-b "
                 />
 
                 <label className="self-center text-right">Assessments</label>
                 <Field
                   name="assessments_provided"
                   component="input"
-                  className="m-2 border-black border "
+                  className="m-2 border-black border-b "
                 />
 
-                <label className="self-center text-right">Description</label>
+                <label className="pt-3 text-right">Description</label>
                 <Field
                   name="description"
                   component="textarea"
-                  className="m-2 border-black border resize-none h-52"
+                  className="m-2 border-black border-b px-2 py-1 resize-none h-52"
                 />
 
-                <label className="self-center text-right">Hours</label>
+                <label className="pt-3 text-right">Hours</label>
                 <Field
                   name="hours_of_operation"
                   component="textarea"
-                  className="m-2 border-black border resize-none h-32"
+                  className="m-2 border-black border-b px-2 py-1 resize-none h-32"
                 />
 
                 <label className="self-center text-right">Phone</label>
                 <Field
                   name="phone"
                   component="input"
-                  className="m-2 border-black border"
+                  className="m-2 border-black border-b"
                 />
 
-                <label className="self-center text-right">
+                <label className="pt-3 text-right">
                   Other locations
                 </label>
                 <Field
                   name="satellite_locations"
                   component="textarea"
-                  className="m-2 border-black border resize-none h-32"
+                  className="m-2 border-black px-2 py-1 border-b resize-none h-32"
                 />
 
-                <label className="self-center text-right">Submitted by</label>
+                <label className="pt-3 text-right">Submitted by</label>
                 <Field
                   name="submitted_by"
                   component="textarea"
-                  className="m-2 border-black border resize-none h-32"
+                  className="m-2 px-2 py-1 border-black border-b resize-none h-32"
                 />
 
                 <label className="self-center text-right">Accessibility</label>
                 <Field
                   name="accessibility_available"
-                  component="input"
-                  className="m-2 border-black border"
+                  component="checkbox"
+                  className="m-2 border-black border-b"
                 />
 
                 <label className="self-center text-right">Website</label>
                 <Field
                   name="website"
                   component="input"
-                  className="m-2 border-black border"
+                  className="m-2 border-black border-b"
                 />
 
                 <label className="self-center text-right">Languages</label>
@@ -231,13 +231,13 @@ function EditProvider(props) {
                   className="m-2"
                 />
 
-                <label className="self-center text-right">
+                <label className="pt-3 text-right">
                   More fee details
                 </label>
                 <Field
                   name="fee_info"
                   component="textarea"
-                  className="m-2 border-black border resize-none h-32"
+                  className="m-2 px-2 py-1 border-black border-b resize-none h-32"
                 />
 
                 <label className="self-center text-right">Services</label>

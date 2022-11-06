@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
+    "start:ashley": "REACT_APP_BUILDER=ashley PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test:watch": "react-scripts test",
     "test": "react-scripts test --watchAll=false && npm run prettier:check",
