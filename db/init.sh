@@ -9,5 +9,6 @@ psql -p 5490 -U transontario < ./03_api.sql
 psql -p 5490 -U transontario < ./04_auth.sql
 psql -p 5490 -U transontario < ./05.sql
 psql -p 5490 -U transontario < ./06.sql
+psql -p 5490 -U transontario < ./07.sql
 pg_ctl stop -D ./db
 
