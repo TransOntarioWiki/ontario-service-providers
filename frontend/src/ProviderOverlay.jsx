@@ -1,23 +1,20 @@
 import React, { useMemo } from "react";
-import Modal from "react-overlays/Modal";
-import { useMe, useReviews } from "./api";
+import { useParams } from "react-router-dom";
+
+import { useMe, useReviews, useProvider } from "./api";
 import Review from "./Review";
 import ReviewForm from "./ReviewForm";
+import PageChrome from "./PageChrome";
 import ProviderContactDetails from "./ProviderContactDetails";
 import { Link } from "react-router-dom";
-
-const renderBackdrop = (props) => (
-  <div
-    {...props}
-    className="w-screen h-screen bg-black/50 fixed top-0 left-0"
-  />
-);
 
 const rhoUrl = (slug) =>
   `https://www.rainbowhealthontario.ca/service-provider-directory/${slug}/`;
 
-const ProviderOverlay = ({ onClose, provider }) => {
+const ProviderOverlay = () => {
   const me = useMe();
+  const { providerSlug } = useParams();
+  const { data: provider } = useProvider(providerSlug);
   const reviewData = useReviews(provider?.id);
 
   const reviews = useMemo(() => {
@@ -35,16 +32,8 @@ const ProviderOverlay = ({ onClose, provider }) => {
     return null;
   }
   return (
-    <Modal
-      show={provider != null}
-      onHide={onClose}
-      renderBackdrop={renderBackdrop}
-      className="fixed top-1/2 left-1/2 p-4 w-full lg:w-fit lg:rounded-lg bg-white drop-shadow-md -translate-x-1/2 -translate-y-1/2 min-width-0 max-h-full overflow-y-auto box-border"
-    >
+    <PageChrome>
       <div className="flex flex-col">
-        <button onClick={onClose} className="absolute block top-2 right-4">
-          x
-        </button>
         <h1 className="text-3xl">{provider.name}</h1>
         {provider.slug && (
           <a
@@ -87,7 +76,7 @@ const ProviderOverlay = ({ onClose, provider }) => {
         )}
         {reviews.length === 0 ? <div>No reviews</div> : null}
       </div>
-    </Modal>
+    </PageChrome>
   );
 };
 

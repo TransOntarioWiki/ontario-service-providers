@@ -1,11 +1,12 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useInfiniteQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 import regions from "./regions";
-import ProviderOverlay from "./ProviderOverlay";
 import { fetchProviders } from "./api";
 
 const ProvidersList = ({ filters }) => {
+  const navigate = useNavigate();
   const { fetchNextPage, hasNextPage, data, isLoading } = useInfiniteQuery(
     ["providers", filters],
     fetchProviders,
@@ -15,7 +16,6 @@ const ProvidersList = ({ filters }) => {
       },
     }
   );
-  const [focusedProviderId, setFocusedProvider] = useState(null);
 
   const providers = useMemo(() => {
     if (!isLoading && data && data.pages) {
@@ -48,13 +48,6 @@ const ProvidersList = ({ filters }) => {
     );
   }, [providers, filters]);
 
-  const focusedProvider = useMemo(() => {
-    if (!providers) {
-      return null;
-    }
-    return providers.find((prov) => prov.slug === focusedProviderId);
-  }, [providers, focusedProviderId]);
-
   if (isLoading) {
     return <div />;
   }
@@ -66,7 +59,7 @@ const ProvidersList = ({ filters }) => {
           {filteredServiceProviders.map((provider) => (
             <div
               key={provider.slug}
-              onClick={() => setFocusedProvider(provider.slug)}
+              onClick={() => navigate(`provider/${provider.slug}`)}
               className="cursor-pointer py-2 border-b border-black"
             >
               <div className="font-bold">{provider.name}</div>
@@ -88,10 +81,6 @@ const ProvidersList = ({ filters }) => {
       ) : (
         <div className="text-xl text-center">No Service Providers Found</div>
       )}
-      <ProviderOverlay
-        provider={focusedProvider}
-        onClose={() => setFocusedProvider(null)}
-      />
     </div>
   );
 };
