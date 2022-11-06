@@ -16,7 +16,7 @@ const autoCompleteWrapper = ({ input, items }) => (
 );
 
 const Listener = ({ values }) => {
-  const [,setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     setSearchParams(values);

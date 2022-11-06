@@ -37,11 +37,7 @@ const ReviewForm = ({ myReview, provider }) => {
   return (
     <div className="pb-2">
       <div className="flex">
-        <Avatar
-          id={me.data.id}
-          avatar={me.data.avatar}
-          className="h-16 mr-4"
-        />
+        <Avatar id={me.data.id} avatar={me.data.avatar} className="h-16 mr-4" />
         <textarea
           className="border rounded border-black w-full px-2 py-1"
           value={reviewText}
