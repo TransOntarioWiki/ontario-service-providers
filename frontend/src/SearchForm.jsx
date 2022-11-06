@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { useForm, Form, Field } from "react-final-form";
+import { Form, Field } from "react-final-form";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
+import { useSearchParams } from "react-router-dom";
 
 import regions from "./regions";
 import { useServices } from "./api";
@@ -15,21 +16,21 @@ const autoCompleteWrapper = ({ input, items }) => (
 );
 
 const Listener = ({ values }) => {
-  const { submit } = useForm();
+  const [,setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    submit(values);
-  }, [submit, values]);
+    setSearchParams(values);
+  }, [setSearchParams, values]);
 
   return null;
 };
 
-const SearchForm = ({ onSearch }) => {
+const SearchForm = () => {
   const servicesData = useServices();
   const services = servicesData.data;
 
   return (
-    <Form onSubmit={onSearch}>
+    <Form onSubmit={() => {}}>
       {({ handleSubmit, values }) => (
         <form onSubmit={handleSubmit}>
           <Listener values={values} />
