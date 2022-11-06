@@ -150,6 +150,31 @@ export const fetchProviders = async ({
   return { data, nextPage: totalResults > nextStart ? nextStart : null };
 };
 
+export const patchProviders = async (data) => {
+  if (!bearer) {
+    return null;
+  }
+
+  await fetch(
+    `${baseUrl}providers?` +
+      new URLSearchParams({
+        id: `eq.${data.id}`,
+      }),
+    {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${bearer}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+      },
+    }
+  );
+
+  queryClient.invalidateQueries(["providers"]);
+};
+
 export const fetchProvider = async ({ queryKey: [, providerSlug] }) => {
   const response = await fetch(
     `${baseUrl}providers?` +

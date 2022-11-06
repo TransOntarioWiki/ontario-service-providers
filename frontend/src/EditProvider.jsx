@@ -8,6 +8,7 @@ import {
   useFees,
   useServices,
   useCharacteristics,
+  patchProviders,
 } from "./api";
 import { Form, Field } from "react-final-form";
 
@@ -101,6 +102,7 @@ function EditProvider(props) {
           initialValues={providerData.data}
           onSubmit={(data) => {
             console.log("TODO, submit", data);
+            patchProviders(data);
           }}
         >
           {(props) => (
