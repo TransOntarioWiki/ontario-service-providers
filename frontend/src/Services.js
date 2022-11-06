@@ -16,8 +16,6 @@ function Services() {
     return _filters;
   }, [searchParams]);
 
-  console.log(filters);
-
   return (
     <PageChrome>
       <div className="p-4 flex flex-col items-center w-full h-full relative flex-grow max-w-6xl mx-auto">

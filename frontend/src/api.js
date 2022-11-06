@@ -5,7 +5,6 @@ const baseUrl =
   process.env.REACT_APP_BUILDER === "ashley"
     ? "https://api.transontario.wiki/"
     : "http://localhost:3000/";
-console.log(process.env);
 
 let bearer;
 export const queryClient = new QueryClient();

@@ -25,12 +25,22 @@ const Listener = ({ values }) => {
   return null;
 };
 
+function paramsToObject(entries) {
+  const result = {};
+  for (const [key, value] of entries) {
+    // each 'entry' is a [key, value] tupple
+    result[key] = value;
+  }
+  return result;
+}
+
 const SearchForm = () => {
   const servicesData = useServices();
   const services = servicesData.data;
+  const [searchParams] = useSearchParams();
 
   return (
-    <Form onSubmit={() => {}}>
+    <Form onSubmit={() => {}} initialValues={paramsToObject(searchParams)}>
       {({ handleSubmit, values }) => (
         <form onSubmit={handleSubmit}>
           <Listener values={values} />
