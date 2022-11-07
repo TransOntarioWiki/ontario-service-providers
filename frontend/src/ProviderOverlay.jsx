@@ -33,8 +33,8 @@ const ProviderOverlay = () => {
   }
   return (
     <PageChrome>
-      <div className="flex flex-col">
-        <h1 className="text-3xl">{provider.name}</h1>
+      <div className="flex flex-col m-4">
+        <h1 className="text-3xl text-center">{provider.name}</h1>
         {provider.slug && (
           <a
             className="self-end text-blue-500"
@@ -53,14 +53,12 @@ const ProviderOverlay = () => {
             Edit
           </Link>
         ) : null}
-        <span>Services: {provider.services?.join(", ")}</span>
-        <span>Specializes in: {provider.specializes_in?.join(", ")}</span>
-        <div className="flex mt-6 gap-2 flex-col lg:flex-row">
-          <div className="w-full lg:w-2/3">
-            <p className="w-full lg:w-96">{provider.description}</p>
-          </div>
-          <ProviderContactDetails provider={provider} />
+        <div className="flex flex-col border-b border-black pb-2">
+          <span><b>Services:</b> {provider.services?.join(", ")}</span>
+          <span><b>Specializes in:</b> {provider.specializes_in?.join(", ")}</span>
         </div>
+        <p className="mt-4 mb-4 w-full">{provider.description}</p>
+        <ProviderContactDetails provider={provider} />
         <h2 className="pt-4 pb-2 text-2xl">Reviews</h2>
         {me.data ? (
           <ReviewForm

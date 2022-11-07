@@ -1,5 +1,5 @@
 const ProviderContactDetails = ({ provider }) => (
-  <div className="flex flex-col p-2 border border-black rounded min-w-fit w-3/4 lg:w-1/3 lg:justify-self-stretch self-center">
+  <div className="flex flex-col p-2 border border-black rounded min-w-fit self-start">
     <span className="self-center underline">Contact</span>
     {provider.phone && <span>Phone: {provider.phone}</span>}
     {provider.email && (
