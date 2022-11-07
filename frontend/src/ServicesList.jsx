@@ -42,7 +42,7 @@ const ProvidersList = ({ filters }) => {
           include =
             include &&
             provider.services.find(
-              (s) => s === filters.services.match(/cs.{([A-Za-z -]+)}/)[1]
+              (s) => s === filters.services.match(/cs.{([A-Za-z -()]+)}/)[1]
             );
         }
         return include;

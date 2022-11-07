@@ -1,5 +1,6 @@
-import { ReactSearchAutocomplete } from "react-search-autocomplete";
+import Select from "react-select";
 import { useSearchParams } from "react-router-dom";
+import { useMemo } from "react";
 
 import regions from "./regions";
 import { useServices } from "./api";
@@ -16,8 +17,19 @@ function paramsToObject(entries) {
 
 const SearchForm = () => {
   const servicesData = useServices();
-  const services = servicesData.data;
+  const services = useMemo(
+    () =>
+      servicesData.data?.map((service) => ({
+        label: service.name,
+        value: `cs.{${service.name}}`,
+      })),
+    [servicesData.data]
+  );
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const selectedService =
+    services?.find((opt) => opt.value === searchParams.get("services"))
+      ?.label || "";
 
   return (
     <form>
@@ -46,20 +58,23 @@ const SearchForm = () => {
         </label>
         <div className="w-full">
           {services ? (
-            <ReactSearchAutocomplete
-              items={services}
-              onSelect={(item) => {
-                setSearchParams({
-                  ...paramsToObject(searchParams),
-                  services: `cs.{${item.name}}`,
-                });
+            <Select
+              options={services}
+              isSearchable
+              isClearable
+              defaultInputValue={selectedService}
+              onChange={(option) => {
+                if (option) {
+                  setSearchParams({
+                    ...paramsToObject(searchParams),
+                    services: option.value,
+                  });
+                } else {
+                  const obj = paramsToObject(searchParams);
+                  delete obj.services;
+                  setSearchParams(obj);
+                }
               }}
-              onClear={() => {
-                const obj = paramsToObject(searchParams);
-                delete obj.services;
-                setSearchParams(obj);
-              }}
-              autoFocus={false}
             />
           ) : null}
         </div>
