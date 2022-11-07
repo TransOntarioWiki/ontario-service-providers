@@ -11,6 +11,8 @@ const ProvidersList = ({ filters }) => {
     ["providers", filters],
     fetchProviders,
     {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
       getNextPageParam: (lastPage) => {
         return lastPage?.nextPage;
       },

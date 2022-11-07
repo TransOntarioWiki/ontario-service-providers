@@ -17,7 +17,10 @@ export const fetchServices = () =>
     });
 
 export const useServices = () => {
-  return useQuery(["services"], fetchServices);
+  return useQuery(["services"], fetchServices, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
 };
 
 const fetchMe = async () => {
@@ -121,6 +124,8 @@ export function useReviews(providerId) {
     getNextPageParam: (lastPage) => {
       return lastPage?.nextPage;
     },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 }
 

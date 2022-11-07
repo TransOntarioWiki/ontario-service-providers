@@ -6,6 +6,7 @@ import Review from "./Review";
 import ReviewForm from "./ReviewForm";
 import PageChrome from "./PageChrome";
 import ProviderContactDetails from "./ProviderContactDetails";
+import ProviderFeeDetails from "./ProviderFeeDetails";
 import { Link } from "react-router-dom";
 
 const rhoUrl = (slug) =>
@@ -54,11 +55,23 @@ const ProviderOverlay = () => {
           </Link>
         ) : null}
         <div className="flex flex-col border-b border-black pb-2">
-          <span><b>Services:</b> {provider.services?.join(", ")}</span>
-          <span><b>Specializes in:</b> {provider.specializes_in?.join(", ")}</span>
+          <span>
+            <b>Services:</b> {provider.services?.join(", ")}
+          </span>
+          <span>
+            <b>Specializes in:</b> {provider.specializes_in?.join(", ")}
+          </span>
+          {provider.assessments_provided && (
+            <span>
+              <b>Assessments Provided:</b> {provider.assessments_provided}
+            </span>
+          )}
         </div>
         <p className="mt-4 mb-4 w-full">{provider.description}</p>
-        <ProviderContactDetails provider={provider} />
+        <div className="flex flex-wrap gap-2 items-stretch">
+          <ProviderContactDetails provider={provider} />
+          <ProviderFeeDetails provider={provider} />
+        </div>
         <h2 className="pt-4 pb-2 text-2xl">Reviews</h2>
         {me.data ? (
           <ReviewForm
