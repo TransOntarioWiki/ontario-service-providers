@@ -1,7 +1,10 @@
 import Avatar from "./Avatar";
 
 const Review = ({ review }) => (
-  <div key={review.discord_user_id} className="border-b last:border-b-0 border-black">
+  <div
+    key={review.discord_user_id}
+    className="border-b last:border-b-0 border-black"
+  >
     <div className="flex">
       <Avatar
         id={review.discord_user_id}

@@ -167,9 +167,7 @@ function EditProvider(props) {
                   className="m-2 border-black border-b"
                 />
 
-                <label className="pt-3 text-right">
-                  Other locations
-                </label>
+                <label className="pt-3 text-right">Other locations</label>
                 <Field
                   name="satellite_locations"
                   component="textarea"
@@ -233,9 +231,7 @@ function EditProvider(props) {
                   className="m-2"
                 />
 
-                <label className="pt-3 text-right">
-                  More fee details
-                </label>
+                <label className="pt-3 text-right">More fee details</label>
                 <Field
                   name="fee_info"
                   component="textarea"
