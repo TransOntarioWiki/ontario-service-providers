@@ -38,7 +38,7 @@ const ProviderOverlay = () => {
   }
   return (
     <PageChrome>
-      <div className="flex flex-col m-4 flex-grow">
+      <div className="flex flex-col p-4 flex-grow max-w-6xl mx-auto">
         <h1 className="text-3xl text-center">{provider.name}</h1>
         {provider.slug && (
           <a
