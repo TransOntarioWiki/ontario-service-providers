@@ -1,6 +1,12 @@
 import { useId } from "react";
 
-const PillButtonInput = ({ name, value, label, currentValue }) => {
+const PillButtonInput = ({
+  name,
+  value,
+  label,
+  currentValue,
+  onSetCurrentValue,
+}) => {
   const id = `pill-${useId()}`;
 
   return (
@@ -12,7 +18,7 @@ const PillButtonInput = ({ name, value, label, currentValue }) => {
         value={value}
         checked={value === currentValue}
         className="hidden peer"
-        onChange={() => {} /* captured by parent */}
+        onClick={() => onSetCurrentValue(value === currentValue ? null : value)}
       />
       <label
         htmlFor={id}
