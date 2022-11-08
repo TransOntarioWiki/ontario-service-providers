@@ -85,7 +85,7 @@ const ProviderOverlay = () => {
           />
         ) : null}
         {reviews.map((review) =>
-          !review.text ? null : <Review key={review.id} review={review} />
+          !review.text ? null : <Review key={review.username} review={review} />
         )}
         {reviews.length === 0 ? <div>No reviews</div> : null}
       </div>
