@@ -1,4 +1,5 @@
 import Avatar from "./Avatar";
+import ReactMarkdown from "react-markdown";
 
 const Review = ({ review }) => (
   <div
@@ -11,7 +12,11 @@ const Review = ({ review }) => (
         avatar={review.avatar}
         className="h-12 mr-4 mt-2"
       />
-      <p>{review.text}</p>
+      <div>
+        <ReactMarkdown className="flex flex-col space-y-2">
+          {review.text}
+        </ReactMarkdown>
+      </div>
     </div>
     <div className="flex py-2">
       <div className="flex-grow" />
