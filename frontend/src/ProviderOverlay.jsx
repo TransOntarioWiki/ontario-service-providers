@@ -7,6 +7,7 @@ import ReviewForm from "./ReviewForm";
 import PageChrome from "./PageChrome";
 import ProviderContactDetails from "./ProviderContactDetails";
 import ProviderFeeDetails from "./ProviderFeeDetails";
+import NotFound from "./NotFound";
 import { Link } from "react-router-dom";
 
 const rhoUrl = (slug) =>
@@ -15,7 +16,7 @@ const rhoUrl = (slug) =>
 const ProviderOverlay = () => {
   const me = useMe();
   const { providerSlug } = useParams();
-  const { data: provider } = useProvider(providerSlug);
+  const { data: provider, isLoading } = useProvider(providerSlug);
   const reviewData = useReviews(provider?.id);
 
   const reviews = useMemo(() => {
@@ -30,11 +31,14 @@ const ProviderOverlay = () => {
   );
 
   if (!provider) {
+    if (!isLoading) {
+      return <NotFound />;
+    }
     return null;
   }
   return (
     <PageChrome>
-      <div className="flex flex-col m-4">
+      <div className="flex flex-col m-4 flex-grow">
         <h1 className="text-3xl text-center">{provider.name}</h1>
         {provider.slug && (
           <a
@@ -80,9 +84,9 @@ const ProviderOverlay = () => {
             provider={provider}
           />
         ) : null}
-        {reviews.map((review) => !review.text ? null : (
-          <Review key={review.id} review={review} />
-        ))}
+        {reviews.map((review) =>
+          !review.text ? null : <Review key={review.id} review={review} />
+        )}
         {reviews.length === 0 ? <div>No reviews</div> : null}
       </div>
     </PageChrome>
