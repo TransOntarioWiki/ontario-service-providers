@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import PageChrome from "./PageChrome";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useProvider,
   useReferralRequirements,
@@ -9,6 +9,7 @@ import {
   useServices,
   useCharacteristics,
   patchProviders,
+  createProvider,
 } from "./api";
 import { Form, Field } from "react-final-form";
 
@@ -18,7 +19,7 @@ function Pill({ label, selected, onClick }) {
   const unselectedClasses =
     "text-blue-500 hover:text-blue-700 border-pink-500 hover:border-pink-700 ";
   const baseClasses =
-    "mr-1 mb-1 border py-1 px-3 rounded-full text-sm duration-100 ";
+    "mr-1 mb-1 border py-1 px-3 rounded-full text-sm duration-100";
 
   const className = selected
     ? baseClasses + selectedClasses
@@ -62,9 +63,11 @@ function MultiSelect({ useOptions, optionKey, className, input }) {
   );
 }
 
-function EditProvider(props) {
+function EditProvider() {
   const { providerSlug } = useParams();
   const providerData = useProvider(providerSlug);
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   if (providerData.isLoading) {
     return (
@@ -84,7 +87,7 @@ function EditProvider(props) {
     );
   }
 
-  if (!providerData.data) {
+  if (!providerData.data && providerSlug) {
     return (
       <PageChrome>
         <div className="flex-grow">
@@ -97,12 +100,37 @@ function EditProvider(props) {
   return (
     <PageChrome>
       <div className="p-4 flex flex-col w-full h-full relative flex-grow max-w-6xl mx-auto">
-        <h1 className="text-3xl mb-8">Edit {providerSlug}</h1>
+        <h1 className="text-3xl mb-8">
+          {providerSlug ? `Edit ${providerSlug}` : "Create new Provider"}
+        </h1>
         <Form
           initialValues={providerData.data}
           onSubmit={(data) => {
-            console.log("TODO, submit", data);
-            patchProviders(data);
+            if (data.accessibility_available === true) {
+              data.accessibility_available = 1;
+            } else if (data.accessibility_available === false) {
+              data.accessibility_available = 0;
+            }
+
+            setError("Loading...");
+
+            if (providerSlug) {
+              patchProviders(data).then((res) => {
+                if (res.status === 200) {
+                  navigate(`/provider/${providerSlug}`);
+                } else {
+                  res.text().then((text) => setError(text));
+                }
+              });
+            } else {
+              createProvider(data).then((res) => {
+                if (res.status === 201) {
+                  navigate(`/provider/${data.slug}`);
+                } else {
+                  res.text().then((text) => setError(text));
+                }
+              });
+            }
           }}
         >
           {(props) => (
@@ -114,6 +142,20 @@ function EditProvider(props) {
                   component="input"
                   className="m-2 border-black border-b "
                 />
+
+                {providerSlug == null ? (
+                  <>
+                    <label className="self-center text-right">Slug</label>
+                    <div>
+                      <Field
+                        name="slug"
+                        component="input"
+                        className="m-2 border-black border-b "
+                      />
+                      (in URL)
+                    </div>
+                  </>
+                ) : null}
 
                 <label className="pt-3 text-right">Address</label>
                 <Field
@@ -184,8 +226,9 @@ function EditProvider(props) {
                 <label className="self-center text-right">Accessibility</label>
                 <Field
                   name="accessibility_available"
-                  component="checkbox"
-                  className="m-2 border-black border-b"
+                  component="input"
+                  type="checkbox"
+                  className="m-2 border-black border-b mr-auto"
                 />
 
                 <label className="self-center text-right">Website</label>
@@ -247,6 +290,7 @@ function EditProvider(props) {
                   className="m-2"
                 />
               </div>
+              {error && <pre>{error}</pre>}
 
               <button
                 type="submit"
