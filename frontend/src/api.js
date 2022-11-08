@@ -44,7 +44,7 @@ export const useMe = () => {
 };
 
 export const postReview = async (provider_id, text, score) => {
-  if (!bearer) {
+  if (!bearer || !text) {
     return null;
   }
 
@@ -74,8 +74,8 @@ export const putReview = async (provider_id, discord_user_id, text, score) => {
         discord_user_id: `eq.${discord_user_id}`,
       }),
     {
-      method: "PATCH",
-      body: JSON.stringify({ provider_id, text, score }),
+      method: text ? "PATCH" : "DELETE",
+      body: text ? JSON.stringify({ provider_id, text, score }) : null,
       headers: {
         Authorization: `Bearer ${bearer}`,
         Accept: "application/json",
