@@ -33,15 +33,7 @@ const SearchForm = () => {
 
   return (
     <form>
-      <div
-        className="flex flex-wrap justify-center gap-2 mb-4"
-        onChange={(ev) => {
-          setSearchParams({
-            ...paramsToObject(searchParams),
-            region: ev.target.value,
-          });
-        }}
-      >
+      <div className="flex flex-wrap justify-center gap-2 mb-4">
         {Object.entries(regions).map(([api, ux]) => (
           <PillButtonInput
             key={api}
@@ -49,6 +41,18 @@ const SearchForm = () => {
             value={api === "null" ? "is.null" : `eq.${api}`}
             label={ux}
             currentValue={searchParams.get("region")}
+            onSetCurrentValue={(value) => {
+              if (value) {
+                setSearchParams({
+                  ...paramsToObject(searchParams),
+                  region: value,
+                });
+              } else {
+                const params = paramsToObject(searchParams);
+                delete params.region;
+                setSearchParams(params);
+              }
+            }}
           />
         ))}
       </div>
