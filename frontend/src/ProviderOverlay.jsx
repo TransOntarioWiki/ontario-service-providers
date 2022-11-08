@@ -67,11 +67,9 @@ const ProviderOverlay = () => {
             provider={provider}
           />
         ) : null}
-        {reviews.map((review) =>
-          review.discord_user_id === me.data?.id || !review.text ? null : (
-            <Review key={review.id} review={review} />
-          )
-        )}
+        {reviews.map((review) => !review.text ? null : (
+          <Review key={review.id} review={review} />
+        ))}
         {reviews.length === 0 ? <div>No reviews</div> : null}
       </div>
     </PageChrome>

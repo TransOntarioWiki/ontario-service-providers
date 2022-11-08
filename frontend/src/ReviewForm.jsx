@@ -39,7 +39,7 @@ const ReviewForm = ({ myReview, provider }) => {
       <div className="flex">
         <Avatar id={me.data.id} avatar={me.data.avatar} className="h-16 mr-4" />
         <textarea
-          className="border rounded border-black w-full px-2 py-1"
+          className="resize-none border rounded border-black w-full px-2 py-1"
           value={reviewText}
           name="text"
           onChange={(ev) => {
