@@ -6,6 +6,7 @@ import Privacy from "./Privacy";
 import EditProvider from "./EditProvider";
 import ProviderOverlay from "./ProviderOverlay";
 import Tos from "./Tos";
+import NotFound from "./NotFound";
 import reportWebVitals from "./reportWebVitals";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { QueryClientProvider } from "react-query";
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: "/tos",
     element: <Tos />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 
