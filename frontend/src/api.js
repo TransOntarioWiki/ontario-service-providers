@@ -161,7 +161,7 @@ export const patchProviders = async (data) => {
     return null;
   }
 
-  await fetch(
+  const response = await fetch(
     `${baseUrl}providers?` +
       new URLSearchParams({
         id: `eq.${data.id}`,
@@ -179,9 +179,36 @@ export const patchProviders = async (data) => {
   );
 
   queryClient.invalidateQueries(["providers"]);
+
+  return response;
+};
+
+export const createProvider = async (data) => {
+  if (!bearer) {
+    return null;
+  }
+
+  const response = await fetch(`${baseUrl}providers`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      Authorization: `Bearer ${bearer}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+  });
+
+  queryClient.invalidateQueries(["providers"]);
+
+  return response;
 };
 
 export const fetchProvider = async ({ queryKey: [, providerSlug] }) => {
+  if (!providerSlug) {
+    return null;
+  }
+
   const response = await fetch(
     `${baseUrl}providers?` +
       new URLSearchParams({

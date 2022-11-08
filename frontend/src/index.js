@@ -30,6 +30,10 @@ const router = createBrowserRouter([
     element: <EditProvider />,
   },
   {
+    path: "/create-provider",
+    element: <EditProvider />,
+  },
+  {
     path: "/oauth",
     element: <OAuth />,
   },

@@ -35,6 +35,11 @@ function NavHeader() {
           </button>
         ) : null}
         {me.status === "success" && me.data ? (
+          <Link className="text-sky-600 font-bold mr-8" to="/create-provider">
+            Add Provider
+          </Link>
+        ) : null}
+        {me.status === "success" && me.data ? (
           <div className="relative" ref={userMenuRef}>
             <button
               onClick={(ev) => {
